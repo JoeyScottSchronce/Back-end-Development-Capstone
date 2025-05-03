@@ -14,7 +14,19 @@ import requests as req
 # Create your views here.
 
 def signup(request):
-    pass
+    if request.method == "POST":
+        username = request.POST.get("username")
+        password = request.POST.get("password")
+        
+        if User.objects.filter(username=username).exists():
+            return render(request, "signup.html", {"form": SignUpForm, "message": "User already exists"})
+           
+        user = User.objects.create_user(username=username, password=password)
+        login(request, user)
+        return redirect(reverse("index"))
+        
+    return render(request, "signup.html", {"form": SignUpForm})
+
 
 
 def index(request):
